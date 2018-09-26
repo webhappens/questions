@@ -1,0 +1,55 @@
+{
+    "name": "webhappens/questions",
+    "description": "A Laravel 5.6 package to help you collect user feedback about your app",
+    "keywords": [
+        "webhappens",
+        "questions",
+        "feedback",
+        "insight",
+        "ux"
+    ],
+    "homepage": "https://github.com/webhappens/questions",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ben Gurney",
+            "email": "ben@webhappens.co.uk",
+            "homepage": "https://webhappens.co.uk",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.1",
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "^7.3"
+    },
+    "autoload": {
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "psr-4": {
+            "WebHappens\\Questions\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WebHappens\\Questions\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "WebHappens\\Questions\\QuestionsServiceProvider"
+            ]
+        }
+    }
+}
