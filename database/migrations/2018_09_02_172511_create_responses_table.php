@@ -17,8 +17,8 @@ class CreateResponsesTable extends Migration
             $table->increments('id');
             $table->integer('question_id')->unsigned();
             $table->integer('answer_id')->unsigned();
-            $table->text('message')->nullable();
             $table->json('context_data')->nullable();
+            $table->text('message')->nullable();
             $table->timestamps();
         });
     }

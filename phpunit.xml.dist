@@ -19,6 +19,7 @@
         </whitelist>
     </filter>
     <php>
+        <env name="APP_KEY" value="base64:AM1r5Iop1aBL4FwJsFbls03jBoN6aErsQnRoguKbfpM="/>
         <env name="DB_CONNECTION" value="testing"/>
     </php>
 </phpunit>

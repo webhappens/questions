@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Response extends Model
 {
     protected $table = 'responses';
+    protected $fillable = ['question_id', 'answer_id', 'context_data', 'message'];
 
     public function question()
     {

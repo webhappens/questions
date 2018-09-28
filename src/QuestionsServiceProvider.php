@@ -34,6 +34,7 @@ class QuestionsServiceProvider extends ServiceProvider
         Route::middleware(config('questions.middleware', []))
             ->name('questions.')
             ->prefix(config('questions.path', '/questions'))
+            ->namespace('WebHappens\\Questions\\Http\Controllers')
             ->group(function () {
                 $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
             });
