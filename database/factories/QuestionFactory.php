@@ -1,8 +1,8 @@
 <?php
 
+use Faker\Generator as Faker;
 use WebHappens\Questions\Answer;
 use WebHappens\Questions\Question;
-use Faker\Generator as Faker;
 
 $factory->define(Question::class, function (Faker $faker) {
     return [

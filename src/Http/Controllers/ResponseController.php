@@ -14,18 +14,25 @@ class ResponseController extends Controller
             'question_id' => 'exists:questions,id',
             'answer_id' => 'exists:answers,id',
             'context_data' => 'nullable|json',
-            'message' => 'nullable|max:500',
         ]);
 
-        $response = Response::create(
-            $request->only([
-                'question_id',
-                'answer_id',
-                'context_data',
-                'message',
-            ])
+        Response::create(
+            $request->only(['question_id', 'answer_id', 'context_data'])
         );
 
         return response()->json([], 201);
+    }
+
+    public function update(Request $request, Response $response)
+    {
+        $request->validate([
+            'message' => 'required|max:500',
+        ]);
+
+        $response->message = $request->get('message');
+
+        $response->save();
+
+        return response()->json();
     }
 }

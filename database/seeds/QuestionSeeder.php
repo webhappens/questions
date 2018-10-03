@@ -1,5 +1,7 @@
 <?php
 
+namespace WebHappens\Questions\Seeds;
+
 use WebHappens\Questions\Answer;
 use WebHappens\Questions\Question;
 use Illuminate\Database\Seeder;

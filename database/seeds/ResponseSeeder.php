@@ -1,8 +1,11 @@
 <?php
 
+namespace WebHappens\Questions\Seeds;
+
+use Illuminate\Database\Seeder;
 use WebHappens\Questions\Answer;
 use WebHappens\Questions\Response;
-use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class ResponseSeeder extends Seeder
 {

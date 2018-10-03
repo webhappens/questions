@@ -27,11 +27,11 @@
     },
     "autoload": {
         "classmap": [
-            "database/seeds",
             "database/factories"
         ],
         "psr-4": {
-            "WebHappens\\Questions\\": "src"
+            "WebHappens\\Questions\\": "src",
+            "WebHappens\\Questions\\Seeds\\": "database/seeds"
         }
     },
     "autoload-dev": {

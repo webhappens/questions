@@ -4,6 +4,7 @@ namespace WebHappens\Questions;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Factory as ModelFactory;
 
 class QuestionsServiceProvider extends ServiceProvider
 {
@@ -11,6 +12,7 @@ class QuestionsServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->registerPublishing();
+            $this->registerFactories();
         }
 
         $this->registerMigrations();
@@ -38,6 +40,11 @@ class QuestionsServiceProvider extends ServiceProvider
             ->group(function () {
                 $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
             });
+    }
+
+    protected function registerFactories()
+    {
+        $this->app->make(ModelFactory::class)->load(__DIR__ . '/../database/factories');
     }
 
     public function register()

@@ -1,7 +1,7 @@
 <?php
 
-use WebHappens\Questions\Answer;
 use Faker\Generator as Faker;
+use WebHappens\Questions\Answer;
 
 $factory->define(Answer::class, function (Faker $faker) {
     return [

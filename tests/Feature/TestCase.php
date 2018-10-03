@@ -12,7 +12,6 @@ abstract class TestCase extends Orchestra
         parent::setUp();
 
         $this->artisan('migrate')->run();
-        $this->withFactories(__DIR__ . '/../../database/factories');
     }
 
     protected function getPackageProviders($app)
