@@ -48,7 +48,8 @@ class ResponseTest extends TestCase
         $fields = $this->validFields(['question_id' => 99]);
 
         $this->store($fields)
-            ->assertSessionHasErrors('question_id');
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('question_id');
     }
 
     /** @test */
@@ -57,7 +58,8 @@ class ResponseTest extends TestCase
         $fields = $this->validFields(['answer_id' => 99]);
 
         $this->store($fields)
-            ->assertSessionHasErrors('answer_id');
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('answer_id');
     }
 
     /** @test */
@@ -66,19 +68,18 @@ class ResponseTest extends TestCase
         $fields = $this->validFields(['context_data' => 'not-null-or-json']);
 
         $this->store($fields)
-            ->assertSessionHasErrors('context_data');
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('context_data');
     }
 
     /** @test */
     public function can_update_with_message()
     {
         $fields = $this->validFields();
-
-        $this->store($fields);
-
+        $response = $this->store($fields);
         $message = 'I like your app!';
 
-        $this->update($fields['question_id'], compact('message'))
+        $this->update($response->getData()->id, compact('message'))
             ->assertStatus(200);
 
         $this->assertDatabaseHas('responses', array_merge($fields, compact('message')));
@@ -88,24 +89,45 @@ class ResponseTest extends TestCase
     public function update_requires_a_valid_message()
     {
         $fields = $this->validFields();
+        $response = $this->store($fields);
 
-        $this->store($fields);
+        $this->update($response->getData()->id, ['message' => ''])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('message');
 
-        $this->update($fields['question_id'], ['message' => ''])
-            ->assertSessionHasErrors('message');
+        $this->update($response->getData()->id, ['message' => str_random(501)])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('message');
+    }
 
-        $this->update($fields['question_id'], ['message' => str_random(501)])
-            ->assertSessionHasErrors('message');
+    /** @test */
+    public function update_is_forbidden_if_message_already_exists()
+    {
+        $fields = $this->validFields();
+        $response = $this->store($fields);
+        $message = 'I like your app!';
+
+        $this->update($response->getData()->id, compact('message'));
+
+        $this->update($response->getData()->id, compact('message'))
+        ->assertStatus(403);
+    }
+
+    /** @test */
+    public function update_throws_a_404_if_response_doesnt_exist()
+    {
+        $this->update(99, ['message' => 'A test message'])
+            ->assertStatus(404);
     }
 
     private function store(array $fields)
     {
-        return $this->post(route('questions.response.store'), $fields);
+        return $this->json('POST', route('questions.response.store'), $fields);
     }
 
     private function update($id, array $fields)
     {
-        return $this->put(route('questions.response.update', $id), $fields);
+        return $this->json('PUT', route('questions.response.update', $id), $fields);
     }
 
     private function validFields(array $overrides = [])
