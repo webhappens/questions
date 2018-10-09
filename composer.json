@@ -31,7 +31,8 @@
         ],
         "psr-4": {
             "WebHappens\\Questions\\": "src",
-            "WebHappens\\Questions\\Seeds\\": "database/seeds"
+            "WebHappens\\Questions\\Seeds\\": "database/seeds",
+            "WebHappens\\Questions\\Nova\\": "nova/src"
         }
     },
     "autoload-dev": {

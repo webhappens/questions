@@ -15,6 +15,7 @@ class QuestionsServiceProvider extends ServiceProvider
             $this->registerFactories();
         }
 
+        $this->registerViews();
         $this->registerMigrations();
         $this->registerRoutes();
     }
@@ -24,6 +25,16 @@ class QuestionsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/questions.php' => config_path('questions.php'),
         ]);
+    }
+
+    protected function registerFactories()
+    {
+        $this->app->make(ModelFactory::class)->load(__DIR__ . '/../database/factories');
+    }
+
+    protected function registerViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'questions');
     }
 
     protected function registerMigrations()
@@ -40,11 +51,6 @@ class QuestionsServiceProvider extends ServiceProvider
             ->group(function () {
                 $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
             });
-    }
-
-    protected function registerFactories()
-    {
-        $this->app->make(ModelFactory::class)->load(__DIR__ . '/../database/factories');
     }
 
     public function register()
