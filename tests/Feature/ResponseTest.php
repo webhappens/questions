@@ -110,7 +110,7 @@ class ResponseTest extends TestCase
         $this->update($response->getData()->id, compact('message'));
 
         $this->update($response->getData()->id, compact('message'))
-        ->assertStatus(403);
+            ->assertStatus(403);
     }
 
     /** @test */
