@@ -19,6 +19,8 @@
         }
     ],
     "require": {
+        "glenscott/url-normalizer": "^1.4",
+        "spatie/url": "^1.3"
     },
     "require-dev": {
         "mockery/mockery": "^1.1",

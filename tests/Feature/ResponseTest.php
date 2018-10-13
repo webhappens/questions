@@ -3,6 +3,7 @@
 namespace WebHappens\Questions\Tests\Feature;
 
 use WebHappens\Questions\Question;
+use WebHappens\Questions\Tests\TestCase;
 
 class ResponseTest extends TestCase
 {
@@ -21,25 +22,36 @@ class ResponseTest extends TestCase
     }
 
     /** @test */
-    public function can_store_without_context_data()
+    public function can_store()
     {
         $fields = $this->validFields();
 
-        $this->store($fields)
+        $storeResponse = $this->store($fields)
             ->assertStatus(201);
 
-        $this->assertDatabaseHas('responses', $fields);
+        $this->assertDatabaseHas('responses', (array)$storeResponse->getData());
+    }
+
+    /** @test */
+    public function can_store_with_referer()
+    {
+        $fields = $this->validFields(['referer' => 'https://example.org/my-article']);
+
+        $storeResponse = $this->store($fields)
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('responses', (array)$storeResponse->getData());
     }
 
     /** @test */
     public function can_store_with_context_data()
     {
-        $fields = $this->validFields(['context_data' => json_encode(['referer' => 'https://example.org'])]);
+        $fields = $this->validFields(['context_data' => json_encode(['returning_customer' => true])]);
 
-        $this->store($fields)
+        $storeResponse = $this->store($fields)
             ->assertStatus(201);
 
-        $this->assertDatabaseHas('responses', $fields);
+        $this->assertDatabaseHas('responses', (array)$storeResponse->getData());
     }
 
     /** @test */
@@ -63,6 +75,16 @@ class ResponseTest extends TestCase
     }
 
     /** @test */
+    public function store_requires_valid_referer()
+    {
+        $fields = $this->validFields(['referer' => str_random(2001)]);
+
+        $this->store($fields)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('referer');
+    }
+
+    /** @test */
     public function store_requires_valid_context_data()
     {
         $fields = $this->validFields(['context_data' => 'not-null-or-json']);
@@ -76,26 +98,26 @@ class ResponseTest extends TestCase
     public function can_update_with_message()
     {
         $fields = $this->validFields();
-        $response = $this->store($fields);
-        $message = 'I like your app!';
+        $storeResponse = $this->store($fields);
+        $data = ['message' => 'I like your app!'];
 
-        $this->update($response->getData()->id, compact('message'))
+        $updateResponse = $this->update($storeResponse->getData()->id, $data)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('responses', array_merge($fields, compact('message')));
+        $this->assertDatabaseHas('responses', array_merge((array)$updateResponse->getData(), $data));
     }
 
     /** @test */
     public function update_requires_a_valid_message()
     {
         $fields = $this->validFields();
-        $response = $this->store($fields);
+        $storeResponse = $this->store($fields);
 
-        $this->update($response->getData()->id, ['message' => ''])
+        $this->update($storeResponse->getData()->id, ['message' => ''])
             ->assertStatus(422)
             ->assertJsonValidationErrors('message');
 
-        $this->update($response->getData()->id, ['message' => str_random(501)])
+        $this->update($storeResponse->getData()->id, ['message' => str_random(501)])
             ->assertStatus(422)
             ->assertJsonValidationErrors('message');
     }
@@ -104,12 +126,12 @@ class ResponseTest extends TestCase
     public function update_is_forbidden_if_message_already_exists()
     {
         $fields = $this->validFields();
-        $response = $this->store($fields);
-        $message = 'I like your app!';
+        $storeResponse = $this->store($fields);
+        $data = ['message' => 'I like your app!'];
 
-        $this->update($response->getData()->id, compact('message'));
+        $this->update($storeResponse->getData()->id, $data);
 
-        $this->update($response->getData()->id, compact('message'))
+        $this->update($storeResponse->getData()->id, $data)
             ->assertStatus(403);
     }
 
@@ -135,6 +157,7 @@ class ResponseTest extends TestCase
         return array_merge([
             'question_id' => $this->question->id,
             'answer_id' => $this->answer->id,
+            'referer' => null,
             'context_data' => null,
         ], $overrides);
     }

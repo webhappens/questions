@@ -4,6 +4,7 @@ namespace WebHappens\Questions\Seeds;
 
 use Illuminate\Database\Seeder;
 use WebHappens\Questions\Answer;
+use WebHappens\Questions\Referer;
 use WebHappens\Questions\Response;
 use Illuminate\Support\Facades\Schema;
 
@@ -13,6 +14,7 @@ class ResponseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
         Response::truncate();
+        Referer::truncate();
         Schema::enableForeignKeyConstraints();
 
         Answer::all()->each(function ($answer) {

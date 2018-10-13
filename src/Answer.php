@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model
 {
-    protected $table = 'answers';
-
     public $timestamps = false;
+
+    protected $table = 'answers';
 
     private static $sentiments = [
         1 => 'Negative',

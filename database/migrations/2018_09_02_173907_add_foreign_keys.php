@@ -27,6 +27,10 @@ class AddForeignKeys extends Migration
             $table->foreign('answer_id')
                 ->references('id')->on('answers')
                 ->onDelete('cascade');
+
+            $table->foreign('referer_id')
+                ->references('id')->on('referers')
+                ->onDelete('cascade');
         });
     }
 

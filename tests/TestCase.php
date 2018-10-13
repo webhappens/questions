@@ -1,6 +1,6 @@
 <?php
 
-namespace WebHappens\Questions\Tests\Feature;
+namespace WebHappens\Questions\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
 use WebHappens\Questions\QuestionsServiceProvider;
