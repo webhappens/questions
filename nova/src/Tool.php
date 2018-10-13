@@ -14,8 +14,8 @@ class Tool extends BaseTool
      */
     public function boot()
     {
-        Nova::script('questions', __DIR__.'/../dist/js/tool.js');
-        Nova::style('questions', __DIR__.'/../dist/css/tool.css');
+        Nova::script('nova-questions', __DIR__.'/../dist/js/tool.js');
+        Nova::style('nova-questions', __DIR__.'/../dist/css/tool.css');
     }
 
     /**
@@ -25,6 +25,6 @@ class Tool extends BaseTool
      */
     public function renderNavigation()
     {
-        return view('questions-nova::navigation');
+        return view('nova-questions::navigation');
     }
 }

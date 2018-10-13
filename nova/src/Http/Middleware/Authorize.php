@@ -2,7 +2,7 @@
 
 namespace WebHappens\Questions\Nova\Http\Middleware;
 
-use Webhappens\Questions\Tool;
+use WebHappens\Questions\Nova\Tool;
 
 class Authorize
 {

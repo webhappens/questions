@@ -5,18 +5,19 @@ namespace WebHappens\Questions\Nova\Resources;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Resource as NovaResource;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Question extends NovaResource
+class Response extends NovaResource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'WebHappens\Questions\Question';
+    public static $model = 'WebHappens\Questions\Response';
 
     /**
      * Indicates if the resource should be displayed in the sidebar.
@@ -25,14 +26,12 @@ class Question extends NovaResource
      */
     public static $displayInNavigation = true;
 
-    public static $with = ['answers'];
-
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'text';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -40,7 +39,8 @@ class Question extends NovaResource
      * @var array
      */
     public static $search = [
-        'id',
+        'message',
+        'context_data',
     ];
 
     /**
@@ -52,10 +52,16 @@ class Question extends NovaResource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-            Text::make('Question', 'text')->sortable(),
-            HasMany::make('Answers', 'answers', Answer::class),
-            HasMany::make('Responses', 'responses', Response::class),
+            ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
+            BelongsTo::make('Question', 'question', Question::class),
+            BelongsTo::make('Answer', 'answer', Answer::class)->sortable(),
+            Text::make('Message', function () {
+                return str_limit($this->message, 30);
+            }),
+            Text::make('Submitted', 'created_at', function () {
+                return $this->created_at->diffForHumans();
+            })->sortable(),
+            Textarea::make('Context data', 'context_data'),
         ];
     }
 
@@ -101,5 +107,15 @@ class Question extends NovaResource
     public function actions(Request $request)
     {
         return [];
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToUpdate(Request $request)
+    {
+        return false;
     }
 }

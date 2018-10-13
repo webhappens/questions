@@ -6,6 +6,9 @@ use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use WebHappens\Questions\Nova\Resources\Answer;
+use WebHappens\Questions\Nova\Resources\Question;
+use WebHappens\Questions\Nova\Resources\Response;
 use Webhappens\Questions\Http\Middleware\Authorize;
 
 class ToolServiceProvider extends ServiceProvider
@@ -17,14 +20,14 @@ class ToolServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'questions-nova');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'nova-questions');
 
         $this->app->booted(function () {
             $this->routes();
         });
 
         Nova::serving(function (ServingNova $event) {
-            //
+            $this->resources();
         });
     }
 
@@ -40,8 +43,17 @@ class ToolServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova', Authorize::class])
-                ->prefix('nova-vendor/questions')
+                ->prefix('nova-vendor/webhappens/nova-questions')
                 ->group(__DIR__.'/../routes/api.php');
+    }
+
+    protected function resources()
+    {
+        Nova::resources([
+            Question::class,
+            Answer::class,
+            Response::class,
+        ]);
     }
 
     /**
