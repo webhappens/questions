@@ -4,34 +4,30 @@ namespace WebHappens\Questions\Nova\Resources;
 
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Question extends BaseResource
+class Referer extends BaseResource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'WebHappens\Questions\Question';
+    public static $model = 'WebHappens\Questions\Referer';
 
     /**
      * Indicates if the resource should be displayed in the sidebar.
      *
      * @var bool
      */
-    public static $displayInNavigation = true;
-
-    public static $with = ['answers'];
+    public static $displayInNavigation = false;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'text';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -39,8 +35,13 @@ class Question extends BaseResource
      * @var array
      */
     public static $search = [
-        'id',
+        // 'id',
     ];
+
+    public function title()
+    {
+        return $this->__toString();
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -52,9 +53,6 @@ class Question extends BaseResource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Question', 'text')->sortable(),
-            HasMany::make('Answers', 'answers', Answer::class),
-            HasMany::make('Responses', 'responses', Response::class),
         ];
     }
 

@@ -7,6 +7,7 @@ use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use WebHappens\Questions\Nova\Resources\Answer;
+use WebHappens\Questions\Nova\Resources\Referer;
 use WebHappens\Questions\Nova\Resources\Question;
 use WebHappens\Questions\Nova\Resources\Response;
 use Webhappens\Questions\Http\Middleware\Authorize;
@@ -52,6 +53,7 @@ class ToolServiceProvider extends ServiceProvider
         Nova::resources([
             Question::class,
             Answer::class,
+            Referer::class,
             Response::class,
         ]);
     }

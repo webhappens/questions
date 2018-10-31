@@ -4,9 +4,12 @@ namespace WebHappens\Questions\Tests\Unit;
 
 use WebHappens\Questions\Referer;
 use WebHappens\Questions\Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class RefererTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function can_first_or_create_from_not_a_url()
     {
@@ -20,6 +23,25 @@ class RefererTest extends TestCase
     {
         $this->firstOrCreateFromString('https://example.org');
         $this->firstOrCreateFromString('https://example.org/my-article');
+        $this->firstOrCreateFromString('https://example.org?a=1&b=2');
+        $this->firstOrCreateFromString('https://example.org#fragment');
+    }
+
+    /** @test */
+    public function can_to_string()
+    {
+        $referer1 = Referer::firstOrCreateFromString('https://example.org');
+        $this->assertEquals('https://example.org', (string)$referer1);
+
+        $referer2 = Referer::firstOrCreateFromString('https://example.org?a=1&b=2');
+        $this->assertEquals('https://example.org?a=1&b=2', (string)$referer2);
+    }
+
+    /** @test */
+    public function will_normalise_query_order()
+    {
+        $referer = Referer::firstOrCreateFromString('https://example.org?b=2&a=1');
+        $this->assertEquals('https://example.org?a=1&b=2', (string)$referer);
     }
 
     private function firstOrCreateFromString($string)

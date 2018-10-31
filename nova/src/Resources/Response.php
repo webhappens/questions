@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Resource as NovaResource;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Response extends NovaResource
+class Response extends BaseResource
 {
     /**
      * The model the resource corresponds to.
@@ -44,6 +43,15 @@ class Response extends NovaResource
     ];
 
     /**
+     * Default ordering for index query.
+     *
+     * @var array
+     */
+    public static $sort = [
+        'created_at' => 'desc'
+    ];
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -53,14 +61,19 @@ class Response extends NovaResource
     {
         return [
             ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
+            BelongsTo::make('Referer', 'referer', Referer::class),
             BelongsTo::make('Question', 'question', Question::class),
-            BelongsTo::make('Answer', 'answer', Answer::class)->sortable(),
-            Text::make('Message', function () {
-                return str_limit($this->message, 30);
+            BelongsTo::make('Answer', 'answer', Answer::class),
+            Text::make('Sentiment', 'answer')->displayUsing(function ($answer) {
+                return $answer->sentiment();
             }),
+            Text::make('Message')->hideFromIndex(),
             Text::make('Submitted', 'created_at', function () {
                 return $this->created_at->diffForHumans();
-            })->sortable(),
+            })->sortable()->hideFromDetail(),
+            Text::make('Submitted', 'created_at', function () {
+                return $this->created_at->diffForHumans() . ' (' . $this->created_at->toDayDateTimeString() . ')';
+            })->sortable()->hideFromIndex(),
             Textarea::make('Context data', 'context_data'),
         ];
     }

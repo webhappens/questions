@@ -23,15 +23,22 @@ class Referer extends Model
 
         $normalizer = new UrlNormalizer($uri, true, true);
         $url = Url::fromString($normalizer->normalize());
+        $query = $url->getAllQueryParameters();
 
-        return self::firstOrCreate([
+        $attributes = [
             'scheme' => $url->getScheme(),
             'host' => $url->getHost(),
             'port' => $url->getPort(),
             'path' => $url->getPath(),
-            'query' => json_encode($url->getAllQueryParameters()),
+            'query' =>  $query ? json_encode($query) : null,
             'fragment' => $url->getFragment(),
-        ]);
+        ];
+
+        if ($first = self::where($attributes)->first()) {
+            return $first;
+        }
+
+        return self::create(array_merge($attributes, compact('query')));
     }
 
     public function responses()
@@ -49,14 +56,29 @@ class Referer extends Model
             ->withScheme($this->scheme)
             ->withHost($this->host)
             ->withPort($this->port)
-            ->withPath($this->path)
-            ->withFragment($this->fragment);
+            ->withPath($this->path);
 
-        foreach (json_decode($this->query) as $key => $value) {
+        if ($this->fragment) {
+            $url = $url->withFragment($this->fragment);
+        }
+
+        $queryParameters = $this->query ?: [];
+
+        foreach ($queryParameters as $key => $value) {
             $url = $url->withQueryParameter($key, $value);
         }
 
         return (string) $url;
+    }
+
+    public function getQueryAttribute($value)
+    {
+        return json_decode($value, true) ?: [];
+    }
+
+    public function setQueryAttribute($value)
+    {
+        $this->attributes['query'] = $value ? json_encode($value) : null;
     }
 
     protected static function isUrl($value)
