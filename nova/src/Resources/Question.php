@@ -38,9 +38,7 @@ class Question extends BaseResource
      *
      * @var array
      */
-    public static $search = [
-        'id',
-    ];
+    public static $search = [];
 
     /**
      * Get the fields displayed by the resource.
@@ -51,10 +49,10 @@ class Question extends BaseResource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
+            ID::make()->hideFromIndex()->hideFromDetail(),
             Text::make('Question', 'text')->sortable(),
-            HasMany::make('Answers', 'answers', Answer::class),
             HasMany::make('Responses', 'responses', Response::class),
+            HasMany::make('Answers', 'answers', Answer::class),
         ];
     }
 

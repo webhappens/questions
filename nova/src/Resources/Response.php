@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use WebHappens\Questions\Nova\Filters\SentimentFilter;
 
 class Response extends BaseResource
 {
@@ -37,10 +38,7 @@ class Response extends BaseResource
      *
      * @var array
      */
-    public static $search = [
-        'message',
-        'context_data',
-    ];
+    public static $search = [];
 
     /**
      * Default ordering for index query.
@@ -62,11 +60,11 @@ class Response extends BaseResource
         return [
             ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
             BelongsTo::make('Referer', 'referer', Referer::class),
-            BelongsTo::make('Question', 'question', Question::class),
-            BelongsTo::make('Answer', 'answer', Answer::class),
             Text::make('Sentiment', 'answer')->displayUsing(function ($answer) {
                 return $answer->sentiment();
             }),
+            BelongsTo::make('Question', 'question', Question::class)->hideFromIndex(),
+            BelongsTo::make('Answer', 'answer', Answer::class)->hideFromIndex(),
             Text::make('Message')->hideFromIndex(),
             Text::make('Submitted', 'created_at', function () {
                 return $this->created_at->diffForHumans();
@@ -97,7 +95,9 @@ class Response extends BaseResource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new SentimentFilter,
+        ];
     }
 
     /**

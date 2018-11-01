@@ -4,6 +4,8 @@ namespace WebHappens\Questions\Nova\Resources;
 
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Referer extends BaseResource
@@ -20,7 +22,7 @@ class Referer extends BaseResource
      *
      * @var bool
      */
-    public static $displayInNavigation = false;
+    public static $displayInNavigation = true;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -52,7 +54,14 @@ class Referer extends BaseResource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
+            ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
+            Text::make('Referer', function () {
+                return $this->__toString();
+            }),
+            Text::make('Responses', function () {
+                return $this->responses()->count();
+            }),
+            HasMany::make('Responses', 'responses', Response::class),
         ];
     }
 
@@ -98,5 +107,15 @@ class Referer extends BaseResource
     public function actions(Request $request)
     {
         return [];
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToUpdate(Request $request)
+    {
+        return false;
     }
 }

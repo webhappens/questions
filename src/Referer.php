@@ -68,7 +68,7 @@ class Referer extends Model
             $url = $url->withQueryParameter($key, $value);
         }
 
-        return (string) $url;
+        return (string)$url;
     }
 
     public function getQueryAttribute($value)

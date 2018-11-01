@@ -8,6 +8,13 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 abstract class BaseResource extends NovaResource
 {
     /**
+     * The logical group associated with the resource.
+     *
+     * @var string
+     */
+    public static $group = 'WH Questions';
+
+    /**
      * Default ordering for index query.
      *
      * @var array
