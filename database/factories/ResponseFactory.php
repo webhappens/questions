@@ -8,7 +8,7 @@ $factory->define(Response::class, function (Faker $faker) {
     $createdAt = $faker->dateTimeBetween('-2 weeks');
 
     return [
-        'message' => $faker->paragraph(),
+        'message' => $faker->optional()->paragraph(),
         'created_at' => $createdAt,
         'updated_at' => $createdAt,
     ];

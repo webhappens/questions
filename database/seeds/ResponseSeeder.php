@@ -27,21 +27,26 @@ class ResponseSeeder extends Seeder
         $referers = $this->makeReferers();
 
         Response::all()->each(function ($response) use ($referers) {
-            $referer = $referers[array_rand($referers)];
-            $referer->save();
+            if ($referer = $referers[array_rand($referers)]) {
+                $referer->save();
 
-            $response->referer()->associate($referer);
-            $response->save();
+                $response->referer()->associate($referer);
+                $response->save();
+            }
         });
     }
 
     private function makeReferers()
     {
+        for ($i = 0; $i < 10; $i++) {
+            $referers[] = null;
+        }
+
         for ($i = 0; $i < 20; $i++) {
             $referers[] = factory(Referer::class)->states('uri')->make();
         }
 
-        for ($i=0; $i < 100; $i++) {
+        for ($i=0; $i < 80; $i++) {
             $referers[] = factory(Referer::class)->states('url', 'with_path')->make();
         }
 

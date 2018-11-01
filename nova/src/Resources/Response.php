@@ -12,6 +12,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use WebHappens\Questions\Nova\Actions\Flag as FlagAction;
 use WebHappens\Questions\Nova\Actions\Unflag as UnflagAction;
 use WebHappens\Questions\Nova\Filters\Flagged as FlaggedFilter;
+use WebHappens\Questions\Nova\Filters\Message as MessageFilter;
 use WebHappens\Questions\Nova\Filters\Submitted as SubmittedFilter;
 use WebHappens\Questions\Nova\Filters\Sentiment as SentimentFilter;
 
@@ -76,12 +77,15 @@ class Response extends BaseResource
             })->sortable()->hideFromIndex(),
             BelongsTo::make('Question', 'question', Question::class)->hideFromIndex(),
             BelongsTo::make('Answer', 'answer', Answer::class)->hideFromIndex(),
-            Text::make('Message')->hideFromIndex(),
+            Text::make('Message', function () {
+                return $this->message ? '✓' : '—';
+            })->onlyOnIndex(),
+            Text::make('Message')->onlyOnDetail(),
             // Textarea::make('Context data', 'context_data'),
 
             new Panel('Workflow', [
                 Text::make('Flagged')->displayUsing(function ($flagged) {
-                    return $flagged ? 'Yes' : 'No';
+                    return $flagged ? '✓' : '—';
                 }),
                 Text::make('Flagged reason')->onlyOnDetail(),
             ]),
@@ -110,6 +114,7 @@ class Response extends BaseResource
         return [
             new SentimentFilter,
             new SubmittedFilter,
+            new MessageFilter,
             new FlaggedFilter,
         ];
     }

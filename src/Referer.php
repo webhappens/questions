@@ -68,7 +68,13 @@ class Referer extends Model
             $url = $url->withFragment($this->fragment);
         }
 
-        return (string)$url;
+        $url = (string)$url;
+
+        if (config('questions.hide_app_url_in_referer')) {
+            return preg_replace('#^' . config('app.url') . '#', '', $url);
+        }
+
+        return $url;
     }
 
     public function getQueryAttribute($value)

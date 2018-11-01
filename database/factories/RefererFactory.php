@@ -1,5 +1,6 @@
 <?php
 
+use Spatie\Url\Url;
 use Faker\Generator as Faker;
 use WebHappens\Questions\Referer;
 
@@ -14,15 +15,19 @@ $factory->state(Referer::class, 'uri', function (Faker $faker) {
 });
 
 $factory->state(Referer::class, 'url', function (Faker $faker) {
+    $url = Url::fromString(config('app.url'));
+
     return [
-        'scheme' => 'https',
-        'host' => 'example.org',
+        'scheme' => $url->getScheme(),
+        'host' => $url->getHost(),
     ];
 });
 
 $factory->state(Referer::class, 'with_port', function (Faker $faker) {
+    $url = Url::fromString(config('app.url'));
+
     return [
-        'port' => 8080,
+        'port' => $url->getPort(),
     ];
 });
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use WebHappens\Questions\Nova\Filters\Submitted;
 
 class Referer extends BaseResource
 {
