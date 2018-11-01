@@ -5,7 +5,7 @@ namespace WebHappens\Questions\Nova\Filters;
 use Illuminate\Http\Request;
 use Laravel\Nova\Filters\Filter;
 
-class DateRange extends Filter
+class Submitted extends Filter
 {
     /**
      * Apply the filter to the given query.

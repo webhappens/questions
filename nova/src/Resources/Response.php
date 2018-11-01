@@ -12,7 +12,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use WebHappens\Questions\Nova\Actions\Flag as FlagAction;
 use WebHappens\Questions\Nova\Actions\Unflag as UnflagAction;
 use WebHappens\Questions\Nova\Filters\Flagged as FlaggedFilter;
-use WebHappens\Questions\Nova\Filters\DateRange as DateRangeFilter;
+use WebHappens\Questions\Nova\Filters\Submitted as SubmittedFilter;
 use WebHappens\Questions\Nova\Filters\Sentiment as SentimentFilter;
 
 class Response extends BaseResource
@@ -108,8 +108,8 @@ class Response extends BaseResource
     public function filters(Request $request)
     {
         return [
-            new DateRangeFilter,
             new SentimentFilter,
+            new SubmittedFilter,
             new FlaggedFilter,
         ];
     }
