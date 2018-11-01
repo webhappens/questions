@@ -50,8 +50,8 @@ class Answer extends BaseResource
     {
         return [
             ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
-            Text::make('Answer', 'text'),
-            Select::make('Sentiment', 'sentiment_id')->options(self::$model::sentiments())->displayUsingLabels(),
+            Text::make('Answer', 'text')->rules('required'),
+            Select::make('Sentiment', 'sentiment_id')->options(self::$model::sentiments())->displayUsingLabels()->rules('required'),
         ];
     }
 

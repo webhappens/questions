@@ -50,7 +50,7 @@ class Question extends BaseResource
     {
         return [
             ID::make()->hideFromIndex()->hideFromDetail(),
-            Text::make('Question', 'text')->sortable(),
+            Text::make('Question', 'text')->sortable()->rules('required'),
             HasMany::make('Responses', 'responses', Response::class),
             HasMany::make('Answers', 'answers', Answer::class),
         ];

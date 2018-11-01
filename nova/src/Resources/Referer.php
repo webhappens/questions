@@ -58,9 +58,6 @@ class Referer extends BaseResource
             Text::make('Referer', function () {
                 return $this->__toString();
             }),
-            Text::make('Responses', function () {
-                return $this->responses()->count();
-            })->onlyOnIndex(),
             HasMany::make('Responses', 'responses', Response::class),
         ];
     }
