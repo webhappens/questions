@@ -20,13 +20,6 @@ $factory->state(Referer::class, 'url', function (Faker $faker) {
     return [
         'scheme' => $url->getScheme(),
         'host' => $url->getHost(),
-    ];
-});
-
-$factory->state(Referer::class, 'with_port', function (Faker $faker) {
-    $url = Url::fromString(config('app.url'));
-
-    return [
         'port' => $url->getPort(),
     ];
 });

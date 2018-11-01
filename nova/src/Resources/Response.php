@@ -64,7 +64,7 @@ class Response extends BaseResource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
+            ID::make()->hideFromIndex()->hideFromDetail(),
             BelongsTo::make('Referer', 'referer', Referer::class),
             Text::make('Sentiment', 'answer')->displayUsing(function ($answer) {
                 return $answer->sentiment();

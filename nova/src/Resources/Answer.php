@@ -49,7 +49,7 @@ class Answer extends BaseResource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
+            ID::make()->hideFromIndex()->hideFromDetail(),
             Text::make('Answer', 'text')->rules('required'),
             Select::make('Sentiment', 'sentiment_id')->options(self::$model::sentiments())->displayUsingLabels()->rules('required'),
         ];
