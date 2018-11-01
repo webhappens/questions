@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Filters\Filter;
 use WebHappens\Questions\Answer;
 
-class SentimentFilter extends Filter
+class Flagged extends Filter
 {
     /**
      * Apply the filter to the given query.
@@ -18,9 +18,7 @@ class SentimentFilter extends Filter
      */
     public function apply(Request $request, $query, $value)
     {
-        return $query->whereHas('answer', function ($query) use ($value) {
-            $query->where('sentiment_id', $value);
-        });
+        return $query->where('flagged', $value);
     }
 
     /**
@@ -31,6 +29,9 @@ class SentimentFilter extends Filter
      */
     public function options(Request $request)
     {
-        return array_flip(Answer::sentiments());
+        return [
+            'Yes' => true,
+            'No' => false,
+        ];
     }
 }

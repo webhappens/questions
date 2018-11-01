@@ -60,7 +60,7 @@ class Referer extends BaseResource
             }),
             Text::make('Responses', function () {
                 return $this->responses()->count();
-            }),
+            })->onlyOnIndex(),
             HasMany::make('Responses', 'responses', Response::class),
         ];
     }
@@ -115,6 +115,11 @@ class Referer extends BaseResource
     }
 
     public function authorizedToUpdate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToDelete(Request $request)
     {
         return false;
     }

@@ -20,6 +20,7 @@ class CreateResponsesTable extends Migration
             $table->integer('referer_id')->unsigned()->nullable();
             $table->json('context_data')->nullable();
             $table->text('message')->nullable();
+            $table->boolean('flagged')->default(false);
             $table->timestamps();
         });
     }

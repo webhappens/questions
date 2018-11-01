@@ -58,14 +58,14 @@ class Referer extends Model
             ->withPort($this->port)
             ->withPath($this->path);
 
-        if ($this->fragment) {
-            $url = $url->withFragment($this->fragment);
-        }
-
         $queryParameters = $this->query ?: [];
 
         foreach ($queryParameters as $key => $value) {
             $url = $url->withQueryParameter($key, $value);
+        }
+
+        if ($this->fragment) {
+            $url = $url->withFragment($this->fragment);
         }
 
         return (string)$url;

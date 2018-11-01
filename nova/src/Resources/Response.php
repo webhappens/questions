@@ -8,7 +8,10 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use WebHappens\Questions\Nova\Filters\SentimentFilter;
+use WebHappens\Questions\Nova\Actions\Flag as FlagAction;
+use WebHappens\Questions\Nova\Actions\Unflag as UnflagAction;
+use WebHappens\Questions\Nova\Filters\Flagged as FlaggedFilter;
+use WebHappens\Questions\Nova\Filters\Sentiment as SentimentFilter;
 
 class Response extends BaseResource
 {
@@ -66,11 +69,14 @@ class Response extends BaseResource
             BelongsTo::make('Question', 'question', Question::class)->hideFromIndex(),
             BelongsTo::make('Answer', 'answer', Answer::class)->hideFromIndex(),
             Text::make('Message')->hideFromIndex(),
-            Text::make('Submitted', 'created_at', function () {
-                return $this->created_at->diffForHumans();
+            Text::make('Flagged')->displayUsing(function ($flagged) {
+                return $flagged ? 'Yes' : 'No';
+            }),
+            Text::make('Submitted', 'created_at')->displayUsing(function ($createdAt) {
+                return $createdAt->diffForHumans();
             })->sortable()->hideFromDetail(),
-            Text::make('Submitted', 'created_at', function () {
-                return $this->created_at->diffForHumans() . ' (' . $this->created_at->toDayDateTimeString() . ')';
+            Text::make('Submitted', 'created_at')->displayUsing(function ($createdAt) {
+                return $createdAt->diffForHumans() . ' (' . $createdAt->toDayDateTimeString() . ')';
             })->sortable()->hideFromIndex(),
             Textarea::make('Context data', 'context_data'),
         ];
@@ -97,6 +103,7 @@ class Response extends BaseResource
     {
         return [
             new SentimentFilter,
+            new FlaggedFilter,
         ];
     }
 
@@ -119,7 +126,14 @@ class Response extends BaseResource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new FlagAction)->canRun(function () {
+                return true;
+            }),
+            (new UnflagAction)->canRun(function () {
+                return true;
+            }),
+        ];
     }
 
     public static function authorizedToCreate(Request $request)

@@ -34,16 +34,16 @@ $factory->state(Referer::class, 'with_path', function (Faker $faker) {
 
 $factory->state(Referer::class, 'with_query', function (Faker $faker) {
     return [
-        'query' => json_encode([
+        'query' => [
             'utm_source' => 'example',
             'utm_medium' => 'email',
             'utm_campaign' => 'test',
-        ]),
+        ],
     ];
 });
 
 $factory->state(Referer::class, 'with_fragment', function (Faker $faker) {
     return [
-        'fragment' => '#' . $faker->domainWord,
+        'fragment' => $faker->domainWord,
     ];
 });
