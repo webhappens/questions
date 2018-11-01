@@ -21,6 +21,7 @@ class CreateResponsesTable extends Migration
             $table->json('context_data')->nullable();
             $table->text('message')->nullable();
             $table->boolean('flagged')->default(false);
+            $table->text('flagged_reason')->nullable();
             $table->timestamps();
         });
     }

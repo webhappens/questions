@@ -12,7 +12,7 @@ abstract class BaseResource extends NovaResource
      *
      * @var string
      */
-    public static $group = 'WH Questions';
+    public static $group = 'Ask Questions';
 
     /**
      * Default ordering for index query.

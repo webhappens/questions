@@ -2,6 +2,7 @@
 
 namespace WebHappens\Questions\Nova\Resources;
 
+use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
@@ -66,19 +67,23 @@ class Response extends BaseResource
             Text::make('Sentiment', 'answer')->displayUsing(function ($answer) {
                 return $answer->sentiment();
             }),
-            BelongsTo::make('Question', 'question', Question::class)->hideFromIndex(),
-            BelongsTo::make('Answer', 'answer', Answer::class)->hideFromIndex(),
-            Text::make('Message')->hideFromIndex(),
-            Text::make('Flagged')->displayUsing(function ($flagged) {
-                return $flagged ? 'Yes' : 'No';
-            }),
             Text::make('Submitted', 'created_at')->displayUsing(function ($createdAt) {
                 return $createdAt->diffForHumans();
             })->sortable()->hideFromDetail(),
             Text::make('Submitted', 'created_at')->displayUsing(function ($createdAt) {
                 return $createdAt->diffForHumans() . ' (' . $createdAt->toDayDateTimeString() . ')';
             })->sortable()->hideFromIndex(),
-            Textarea::make('Context data', 'context_data'),
+            BelongsTo::make('Question', 'question', Question::class)->hideFromIndex(),
+            BelongsTo::make('Answer', 'answer', Answer::class)->hideFromIndex(),
+            Text::make('Message')->hideFromIndex(),
+            // Textarea::make('Context data', 'context_data'),
+
+            new Panel('Workflow', [
+                Text::make('Flagged')->displayUsing(function ($flagged) {
+                    return $flagged ? 'Yes' : 'No';
+                }),
+                Text::make('Flagged reason')->onlyOnDetail(),
+            ]),
         ];
     }
 

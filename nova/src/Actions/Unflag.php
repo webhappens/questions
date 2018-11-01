@@ -25,6 +25,7 @@ class Unflag extends Action
     {
         foreach ($models as $model) {
             $model->flagged = false;
+            $model->flagged_reason = null;
             $model->save();
         }
 

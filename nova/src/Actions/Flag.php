@@ -3,6 +3,7 @@
 namespace WebHappens\Questions\Nova\Actions;
 
 use Illuminate\Bus\Queueable;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
@@ -25,6 +26,11 @@ class Flag extends Action
     {
         foreach ($models as $model) {
             $model->flagged = true;
+
+            if ($reason = $fields->reason) {
+                $model->flagged_reason = $reason;
+            }
+
             $model->save();
         }
 
@@ -38,6 +44,8 @@ class Flag extends Action
      */
     public function fields()
     {
-        return [];
+        return [
+            Text::make('Reason (optional)', 'reason'),
+        ];
     }
 }
