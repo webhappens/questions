@@ -66,13 +66,13 @@ class Response extends BaseResource
         return [
             ID::make()->hideFromIndex()->hideFromDetail(),
             BelongsTo::make('Referer', 'referer', Referer::class),
-            Text::make('Sentiment', 'answer')->displayUsing(function ($answer) {
+            Text::make('Sentiment', 'answer')->resolveUsing(function ($answer) {
                 return $answer->sentiment();
             }),
-            Text::make('Submitted', 'created_at')->displayUsing(function ($createdAt) {
+            Text::make('Submitted', 'created_at')->resolveUsing(function ($createdAt) {
                 return $createdAt->diffForHumans();
             })->sortable()->hideFromDetail(),
-            Text::make('Submitted', 'created_at')->displayUsing(function ($createdAt) {
+            Text::make('Submitted', 'created_at')->resolveUsing(function ($createdAt) {
                 return $createdAt->diffForHumans() . ' (' . $createdAt->toDayDateTimeString() . ')';
             })->sortable()->hideFromIndex(),
             BelongsTo::make('Question', 'question', Question::class)->hideFromIndex(),
@@ -84,7 +84,7 @@ class Response extends BaseResource
             // Textarea::make('Context data', 'context_data'),
 
             new Panel('Workflow', [
-                Text::make('Flagged')->displayUsing(function ($flagged) {
+                Text::make('Flagged')->resolveUsing(function ($flagged) {
                     return $flagged ? '✓' : '—';
                 }),
                 Text::make('Flagged reason')->onlyOnDetail(),

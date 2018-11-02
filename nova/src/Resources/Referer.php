@@ -8,9 +8,13 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use WebHappens\Questions\Nova\Filters\Submitted;
+use Epartment\NovaDependencyContainer\HasDependencies;
+use Epartment\NovaDependencyContainer\NovaDependencyContainer;
 
 class Referer extends BaseResource
 {
+    use HasDependencies;
+
     /**
      * The model the resource corresponds to.
      *
@@ -75,18 +79,20 @@ class Referer extends BaseResource
             Text::make('Referer', function () {
                 return $this->__toString();
             }),
-            Text::make('Type', function () {
-                return $this->host ? 'URL' : 'Custom';
-            }),
-            Text::make('Scheme')->onlyOnDetail(),
-            Text::make('Host')->onlyOnDetail(),
-            Text::make('Port')->onlyOnDetail(),
-            Text::make('Path')->onlyOnDetail(),
-            Text::make('Query')->displayUsing(function ($query) {
-                return http_build_query($query);
-            })->onlyOnDetail(),
-            Text::make('Fragment')->onlyOnDetail(),
-            HasMany::make('Responses', 'responses', Response::class),
+            NovaDependencyContainer::make([
+                Text::make('Scheme')->onlyOnDetail(),
+                Text::make('Host')->onlyOnDetail(),
+                Text::make('Port')->onlyOnDetail(),
+                Text::make('Path')->onlyOnDetail(),
+                Text::make('Query')->resolveUsing(function ($query) {
+                    return http_build_query($query);
+                })->onlyOnDetail(),
+                Text::make('Fragment')->onlyOnDetail(),
+                ])->dependsOnNotEmpty('host'),
+                Text::make('Type', function () {
+                    return $this->host ? 'URL' : 'Custom';
+                }),
+                HasMany::make('Responses', 'responses', Response::class),
         ];
     }
 
