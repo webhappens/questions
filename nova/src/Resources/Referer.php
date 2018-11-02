@@ -53,6 +53,13 @@ class Referer extends BaseResource
     public static $globallySearchable = false;
 
     /**
+     * The relationships that should be eager loaded on index queries.
+     *
+     * @var array
+     */
+    public static $with = ['responses'];
+
+    /**
      * Default ordering for index query.
      *
      * @var array
@@ -78,6 +85,9 @@ class Referer extends BaseResource
             ID::make()->sortable()->hideFromIndex()->hideFromDetail(),
             Text::make('Referer', function () {
                 return $this->__toString();
+            }),
+            Text::make('Latest Response', 'responses')->resolveUsing(function ($responses) {
+                return $responses->sortByDesc('created_at')->first()->created_at->diffForHumans();
             }),
             NovaDependencyContainer::make([
                 Text::make('Scheme')->onlyOnDetail(),
