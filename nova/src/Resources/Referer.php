@@ -88,7 +88,7 @@ class Referer extends BaseResource
             }),
             Text::make('Latest Response', 'responses')->resolveUsing(function ($responses) {
                 return $responses->sortByDesc('created_at')->first()->created_at->diffForHumans();
-            }),
+            })->onlyOnIndex(),
             NovaDependencyContainer::make([
                 Text::make('Scheme')->onlyOnDetail(),
                 Text::make('Host')->onlyOnDetail(),
