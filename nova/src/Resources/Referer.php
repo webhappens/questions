@@ -38,7 +38,23 @@ class Referer extends BaseResource
      * @var array
      */
     public static $search = [
-        // 'id',
+        'uri',
+    ];
+
+    /**
+     * Indicates if the resource should be globally searchable.
+     *
+     * @var bool
+     */
+    public static $globallySearchable = false;
+
+    /**
+     * Default ordering for index query.
+     *
+     * @var array
+     */
+    public static $sort = [
+        'uri' => 'asc'
     ];
 
     public function title()
@@ -59,6 +75,17 @@ class Referer extends BaseResource
             Text::make('Referer', function () {
                 return $this->__toString();
             }),
+            Text::make('Type', function () {
+                return $this->host ? 'URL' : 'Custom';
+            }),
+            Text::make('Scheme')->onlyOnDetail(),
+            Text::make('Host')->onlyOnDetail(),
+            Text::make('Port')->onlyOnDetail(),
+            Text::make('Path')->onlyOnDetail(),
+            Text::make('Query')->displayUsing(function ($query) {
+                return http_build_query($query);
+            })->onlyOnDetail(),
+            Text::make('Fragment')->onlyOnDetail(),
             HasMany::make('Responses', 'responses', Response::class),
         ];
     }

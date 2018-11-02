@@ -15,66 +15,41 @@ class Referer extends Model
 
     protected $fillable = ['uri', 'scheme', 'host', 'port', 'path', 'query', 'fragment'];
 
-    public static function firstOrCreateFromString($uri)
+    public static function makeFromString($uri)
     {
         if ( ! self::isUrl($uri)) {
-            return self::firstOrCreate(['uri' => $uri]);
+            return self::make(['uri' => $uri]);
         }
 
-        $normalizer = new UrlNormalizer($uri, true, true);
-        $url = Url::fromString($normalizer->normalize());
-        $query = $url->getAllQueryParameters();
+        $url = self::parseUrl($uri);
 
-        $attributes = [
+        return self::make([
+            'uri' => (string)$url,
             'scheme' => $url->getScheme(),
             'host' => $url->getHost(),
             'port' => $url->getPort(),
             'path' => $url->getPath(),
-            'query' =>  $query ? json_encode($query) : null,
+            'query' => $url->getAllQueryParameters(),
             'fragment' => $url->getFragment(),
-        ];
+        ]);
+    }
 
-        if ($first = self::where($attributes)->first()) {
+    public static function firstOrCreateFromString($uri)
+    {
+        $model = self::makeFromString($uri);
+
+        if ($first = self::where('uri', $model->uri)->first()) {
             return $first;
         }
 
-        return self::create(array_merge($attributes, compact('query')));
+        $model->save();
+
+        return $model;
     }
 
     public function responses()
     {
         return $this->hasMany(Response::class);
-    }
-
-    public function __toString()
-    {
-        if ($this->uri) {
-            return $this->uri;
-        }
-
-        $url = Url::create()
-            ->withScheme($this->scheme)
-            ->withHost($this->host)
-            ->withPort($this->port)
-            ->withPath($this->path);
-
-        $queryParameters = $this->query ?: [];
-
-        foreach ($queryParameters as $key => $value) {
-            $url = $url->withQueryParameter($key, $value);
-        }
-
-        if ($this->fragment) {
-            $url = $url->withFragment($this->fragment);
-        }
-
-        $url = (string)$url;
-
-        if (config('questions.hide_app_url_in_referer')) {
-            return preg_replace('#^' . config('app.url') . '#', '', $url);
-        }
-
-        return $url;
     }
 
     public function getQueryAttribute($value)
@@ -85,6 +60,22 @@ class Referer extends Model
     public function setQueryAttribute($value)
     {
         $this->attributes['query'] = $value ? json_encode($value) : null;
+    }
+
+    public function __toString()
+    {
+        if (config('questions.hide_app_url_in_referer')) {
+            return preg_replace('#^' . config('app.url') . '#', '', $this->uri);
+        }
+
+        return $this->uri;
+    }
+
+    protected static function parseUrl($url)
+    {
+        $normalizer = new UrlNormalizer($url, true, true);
+
+        return Url::fromString($normalizer->normalize());
     }
 
     protected static function isUrl($value)

@@ -11,9 +11,26 @@ class RefererTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
+    public function can_make_from_not_a_url()
+    {
+        $this->makeFromString('example.org/not-a-url');
+        $this->makeFromString('/not-a-url');
+        $this->makeFromString('http://not-a-url');
+    }
+
+    /** @test */
+    public function can_make_from_a_valid_url()
+    {
+        $this->makeFromString('https://example.org');
+        $this->makeFromString('https://example.org/my-article');
+        $this->makeFromString('https://example.org?a=1&b=2');
+        $this->makeFromString('https://example.org#fragment');
+    }
+
+    /** @test */
     public function can_first_or_create_from_not_a_url()
     {
-        $this->firstOrCreateFromString('example.com/not-a-url');
+        $this->firstOrCreateFromString('example.org/not-a-url');
         $this->firstOrCreateFromString('/not-a-url');
         $this->firstOrCreateFromString('http://not-a-url');
     }
@@ -30,18 +47,25 @@ class RefererTest extends TestCase
     /** @test */
     public function can_to_string()
     {
-        $referer1 = Referer::firstOrCreateFromString('https://example.org');
+        $referer1 = Referer::makeFromString('https://example.org');
         $this->assertEquals('https://example.org', (string)$referer1);
 
-        $referer2 = Referer::firstOrCreateFromString('https://example.org?a=1&b=2');
+        $referer2 = Referer::makeFromString('https://example.org?a=1&b=2');
         $this->assertEquals('https://example.org?a=1&b=2', (string)$referer2);
     }
 
     /** @test */
     public function will_normalise_query_order()
     {
-        $referer = Referer::firstOrCreateFromString('https://example.org?b=2&a=1');
+        $referer = Referer::makeFromString('https://example.org?b=2&a=1');
         $this->assertEquals('https://example.org?a=1&b=2', (string)$referer);
+    }
+
+    private function makeFromString($string)
+    {
+        $referer = Referer::makeFromString($string);
+        $this->assertInstanceOf(Referer::class, $referer);
+        $this->assertCount(0, Referer::all());
     }
 
     private function firstOrCreateFromString($string)
